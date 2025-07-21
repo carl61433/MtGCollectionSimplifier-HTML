@@ -64,30 +64,30 @@
 			const isFoil= document.getElementById('foil-checkbox').checked;
 
 			var cardURL = `https://api.scryfall.com/cards/${setCode}/${cardNumber}`;
-			async function getJsonData(cardURL) {
-				try {
-					const response = await fetch(cardURL);
-					
-					if (!response.ok) {
-						throw new Error(`HTTP error! status: ${response.status}`);
-					}
-					
-					const cardJson = await response.json();
-					//Need to get name from json
-					const cardName = cardJson.name;
-					document.getElementById("cardList").value = cardName + "\n";
-					
-					// Get the existing count or set it to 1 if it doesn't exist
-					let count = cardMap.get(`${setCode},${cardNumber},${isFoil}`) || 0;
-					count++;
-					
-					mapData.set(`${setCode},${cardNumber},${isFoil}`, {$count, $cardName, $setCode, $cardNumber, foil})
-					document.getElementById("cardList").value = mapData; // print the actual card data
-				} catch (error) {
-					console.error(error);
-					return null; // Handle the error appropriately
-				}
-			}
+            //document.getElementById("demo").innerHTML = cardURL;
+            try {
+                const response = await fetch(cardURL);
+                console.log(response);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const cardJson = await response.json();
+                //Need to get name from json
+                const cardName = cardJson.name;
+                document.getElementById("cardList").value = cardName + "\n";
+                
+                // Get the existing count or set it to 1 if it doesn't exist
+                let count = cardMap.get(`${setCode},${cardNumber},${isFoil}`) || 0;
+                count++;
+                
+                mapData.set(`${setCode},${cardNumber},${isFoil}`, {count, cardName, setCode, cardNumber, isFoil})
+                document.getElementById("cardList").value = mapData; // print the actual card data
+            } catch (error) {
+                console.error(error);
+                return null; // Handle the error appropriately
+            }
 		});
 	</script>
 </body>
