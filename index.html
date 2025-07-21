@@ -55,7 +55,7 @@
 	
 	<script>
 		const mapData = new Map();
-		mapData.Set("initial")
+		mapData.set("initial","Count,Name,Edition,Collector Number,Foil")
 		//Map should be something like ("SET,#,FOIL", {$cardCount, $nameFromJSON, $setCode, $cardNumber, foil})
 		
 		document.getElementById('add-to-list-button').addEventListener('click', async function() {
@@ -90,4 +90,5 @@
 			}
 		});
 	</script>
+</body>
 </html>
