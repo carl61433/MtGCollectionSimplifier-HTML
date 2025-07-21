@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTG Collection Simplifier</title>
+    <style>
+        /* Add some basic styling to make the page look decent */
+        body {
+            font-family: Arial, sans-serif;
+            width: 800px;
+            margin: 40px auto;
+        }
+        
+        .form-container {
+            float: left;
+            width: 400px;
+        }
+        
+        .input-field {
+            margin-bottom: 20px;
+        }
+        
+        .large-text-box {
+            float: right;
+            height: 500px;
+            width: 350px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>MTG Collection Simplifier</h1>
+    
+    <div class="form-container">
+        <label class="input-field">Set Code:</label>
+        <input type="text" id="set-code" name="set-code"><br><br>
+        
+        <label class="input-field">Card #:</label>
+        <input type="text" id="card-number" name="card-number"><br><br>
+        
+        <label class="input-field">Foil?</label>
+        <input type="checkbox" id="foil-checkbox" name="foil-checkbox"><br><br>
+        
+        <button id="add-to-list-button">Add to List</button>
+    </div>
+    
+    <div class="large-text-box">
+        <textarea id="card-list" name="card-list" rows="20" cols="30"></textarea>
+    </div>
+
+    <script>
+        // You can add JavaScript code here to handle the form submission and update the text area
+        //I need Count, Name, Edition, Collector Number, and Foil
+        document.getElementById('add-to-list-button').addEventListener('click', function() {
+            const setCode = document.getElementById('set-code').value;
+            const cardNumber = document.getElementById('card-number').value;
+            const foilCheckbox = document.getElementById('foil-checkbox').checked;
+            const cardCount = 0;
+
+            const userAction = async () => {
+                const response = await fetch('https://api.scryfall.com/cards/$setCode/$cardNumber');
+                const cardJson = await response.json(); //extract JSON from the http response
+                // do something with myJson
+            }
+            //If foilCheckBox == True:
+            //const listItem = `${setCode} - ${cardNumber} *F*\n`;
+            //document.getElementById('card-list').value += listItem;
+        });
+    </script>
+</html>
