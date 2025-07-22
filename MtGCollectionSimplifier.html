@@ -46,7 +46,9 @@
         <label class="input-field">Foil?</label>
         <input type="checkbox" id="foil-checkbox" name="foil-checkbox"><br><br>
         
-        <button id="add-to-list-button">Add to list</button>
+        <button id="add-to-list-button">Add to list</button><br><br>
+
+        <label id="error-message">Waiting...</label><br><br>
     </div>
     
     <div class="infobox">
@@ -55,6 +57,7 @@
     </div>
 	
 	<script>
+        let label = document.getElementById("error-message");
 		const mapData = new Map();
 		mapData.set("Initial","Count,Name,Edition,Collector Number,Foil");
 		//Map should be something like ("SET,#,FOIL", {$cardCount, $nameFromJSON, $setCode, $cardNumber, foil})
@@ -75,9 +78,12 @@
                 const response = await fetch(cardURL);
                 
                 if (!response.ok) {
+                    label.innerHTML = `${response.status}`;
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
+                label.innerHTML = "Success!";
+
                 const cardJson = await response.json();
                 //Need to get name from json
                 const cardName = cardJson.name;
