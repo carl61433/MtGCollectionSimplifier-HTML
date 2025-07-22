@@ -51,6 +51,7 @@
     
     <div class="infobox">
         <textarea id="cardList" name="cardList" rows="150" cols="50">Count,Name,Edition,Collector Number,Foil</textarea>
+        <button onclick="downloadFile()">Download as CSV</button>
     </div>
 	
 	<script>
@@ -62,7 +63,11 @@
 		document.getElementById('add-to-list-button').addEventListener('click', async function() {
 			const setCode = document.getElementById('set-code').value;
 			const cardNumber = document.getElementById('card-number').value;
-			const isFoil= document.getElementById('foil-checkbox').checked;
+            var isFoil = 0;
+            var allCards = '';
+			if (document.getElementById('foil-checkbox').checked) {
+                isFoil = 1;
+            }
 
 			var cardURL = `https://api.scryfall.com/cards/${setCode}/${cardNumber}`;
 
@@ -78,17 +83,19 @@
                 const cardName = cardJson.name;
                 
                 // Get the existing count or set it to 1 if it doesn't exist
-                if (mapData.has(`${setCode},${cardNumber},${isFoil}`)) {
-                    mapData[`${setCode},${cardNumber},${isFoil}`][0] = count++;
-                    console.log(count);
-                } else {
-                    mapData.set(`${setCode},${cardNumber},${isFoil}`, {count, cardName, setCode, cardNumber, isFoil});
-                    console.log(mapData[`${setCode},${cardNumber},${isFoil}`]);
+                if (!mapData.has(`${setCode},${cardNumber},${isFoil}`)) {
+                    count = 0;
+                    mapData.set(`${setCode},${cardNumber},${isFoil}`, [count, cardName, setCode, cardNumber, isFoil]);
+                    console.log(mapData.values(`${setCode},${cardNumber},${isFoil}`));
                 }
+
+                mapData.set(`${setCode},${cardNumber},${isFoil}`, [++count, cardName, setCode, cardNumber, isFoil]);
                 
                 for (const value of mapData.values()) {
-                    document.getElementById("cardList").value = value + "\n"; // print the actual card data
+                    allCards += `${value}\n`;
                 }
+                
+                document.getElementById("cardList").value = allCards; // print the actual card data
 
                 //document.getElementById("cardList").value = mapData.value() + "\n"; // print the actual card data
             } catch (error) {
@@ -97,5 +104,17 @@
             }
 		});
 	</script>
+
+    <script>
+        const downloadFile = () => {
+            const link = document.createElement("a");
+            const content = document.getElementById("cardList").value;
+            const file = new Blob([content], { type: 'text/csv' });
+            link.href = URL.createObjectURL(file);
+            link.download = "cards.csv";
+            link.click();
+            URL.revokeObjectURL(link.href);
+        };
+    </script>
 </body>
 </html>
