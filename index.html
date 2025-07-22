@@ -55,8 +55,9 @@
 	
 	<script>
 		const mapData = new Map();
-		mapData.set("initial","Count,Name,Edition,Collector Number,Foil")
+		mapData.set("Initial","Count,Name,Edition,Collector Number,Foil");
 		//Map should be something like ("SET,#,FOIL", {$cardCount, $nameFromJSON, $setCode, $cardNumber, foil})
+        var count = 0;
 		
 		document.getElementById('add-to-list-button').addEventListener('click', async function() {
 			const setCode = document.getElementById('set-code').value;
@@ -64,10 +65,9 @@
 			const isFoil= document.getElementById('foil-checkbox').checked;
 
 			var cardURL = `https://api.scryfall.com/cards/${setCode}/${cardNumber}`;
-            //document.getElementById("demo").innerHTML = cardURL;
+
             try {
                 const response = await fetch(cardURL);
-                console.log(response);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -76,14 +76,21 @@
                 const cardJson = await response.json();
                 //Need to get name from json
                 const cardName = cardJson.name;
-                document.getElementById("cardList").value = cardName + "\n";
                 
                 // Get the existing count or set it to 1 if it doesn't exist
-                let count = cardMap.get(`${setCode},${cardNumber},${isFoil}`) || 0;
-                count++;
+                if (mapData.has(`${setCode},${cardNumber},${isFoil}`)) {
+                    mapData[`${setCode},${cardNumber},${isFoil}`][0] = count++;
+                    console.log(count);
+                } else {
+                    mapData.set(`${setCode},${cardNumber},${isFoil}`, {count, cardName, setCode, cardNumber, isFoil});
+                    console.log(mapData[`${setCode},${cardNumber},${isFoil}`]);
+                }
                 
-                mapData.set(`${setCode},${cardNumber},${isFoil}`, {count, cardName, setCode, cardNumber, isFoil})
-                document.getElementById("cardList").value = mapData; // print the actual card data
+                for (const value of mapData.values()) {
+                    document.getElementById("cardList").value = value + "\n"; // print the actual card data
+                }
+
+                //document.getElementById("cardList").value = mapData.value() + "\n"; // print the actual card data
             } catch (error) {
                 console.error(error);
                 return null; // Handle the error appropriately
