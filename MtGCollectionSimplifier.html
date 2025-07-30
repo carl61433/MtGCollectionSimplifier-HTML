@@ -87,15 +87,19 @@
                 const cardJson = await response.json();
                 //Need to get name from json
                 const cardName = cardJson.name;
+                let foilStr = "foil"
+                if (!isFoil) {
+                    foilStr = ""
+                }
                 
                 // Get the existing count or set it to 1 if it doesn't exist
                 if (!mapData.has(`${setCode},${cardNumber},${isFoil}`)) {
                     count = 0;
-                    mapData.set(`${setCode},${cardNumber},${isFoil}`, [count, cardName, setCode, cardNumber, isFoil]);
+                    mapData.set(`${setCode},${cardNumber},${isFoil}`, [count, cardName, setCode, cardNumber, foilStr]);
                     console.log(mapData.values(`${setCode},${cardNumber},${isFoil}`));
                 }
 
-                mapData.set(`${setCode},${cardNumber},${isFoil}`, [++count, cardName, setCode, cardNumber, isFoil]);
+                mapData.set(`${setCode},${cardNumber},${isFoil}`, [++count, cardName, setCode, cardNumber, foilStr]);
                 
                 for (const value of mapData.values()) {
                     allCards += `${value}\n`;
